@@ -17,7 +17,7 @@ class OAuth2PasswordRequestForm:
         @app.post("/login")
         def login(form_data: OAuth2PasswordRequestForm = Depends()):
             data = form_data.parse()
-            print(data.username)
+            print(data.email)
             print(data.password)
             for scope in data.scopes:
                 print(scope)
@@ -33,7 +33,7 @@ class OAuth2PasswordRequestForm:
     grant_type: the OAuth2 spec says it is required and MUST be the fixed string "password".
         Nevertheless, this dependency class is permissive and allows not passing it. If you want to enforce it,
         use instead the OAuth2PasswordRequestFormStrict dependency.
-    username: username string. The OAuth2 spec requires the exact field name "username".
+    email: email string. The OAuth2 spec requires the exact field name "email".
     password: password string. The OAuth2 spec requires the exact field name "password".
     scope: Optional string. Several scopes (each one a string) separated by spaces. E.g.
         "items:read items:write users:read profile openid"
@@ -46,14 +46,14 @@ class OAuth2PasswordRequestForm:
     def __init__(
         self,
         grant_type: str = Form(default=None, regex="password"),
-        username: str = Form(),
+        email: str = Form(),
         password: str = Form(),
         scope: str = Form(default=""),
         client_id: Optional[str] = Form(default=None),
         client_secret: Optional[str] = Form(default=None),
     ):
         self.grant_type = grant_type
-        self.username = username
+        self.email = email
         self.password = password
         self.scopes = scope.split()
         self.client_id = client_id
@@ -67,7 +67,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
         @app.post("/login")
         def login(form_data: OAuth2PasswordRequestFormStrict = Depends()):
             data = form_data.parse()
-            print(data.username)
+            print(data.email)
             print(data.password)
             for scope in data.scopes:
                 print(scope)
@@ -83,7 +83,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
     grant_type: the OAuth2 spec says it is required and MUST be the fixed string "password".
         This dependency is strict about it. If you want to be permissive, use instead the
         OAuth2PasswordRequestForm dependency class.
-    username: username string. The OAuth2 spec requires the exact field name "username".
+    email: email string. The OAuth2 spec requires the exact field name "email".
     password: password string. The OAuth2 spec requires the exact field name "password".
     scope: Optional string. Several scopes (each one a string) separated by spaces. E.g.
         "items:read items:write users:read profile openid"
@@ -96,7 +96,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
     def __init__(
         self,
         grant_type: str = Form(regex="password"),
-        username: str = Form(),
+        email: str = Form(),
         password: str = Form(),
         scope: str = Form(default=""),
         client_id: Optional[str] = Form(default=None),
@@ -104,7 +104,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
     ):
         super().__init__(
             grant_type=grant_type,
-            username=username,
+            email=email,
             password=password,
             scope=scope,
             client_id=client_id,
